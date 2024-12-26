@@ -153,6 +153,22 @@ def get_plots():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/getproperties',methods=['GET'])
+def get_properties():
+    try:
+        plots_ref=db.collection('plots')
+        query = plots_ref.stream()
+        plots = []
+        for doc in query:
+            plots.append(doc.to_dict())
+
+        if not plots:
+            return jsonify({"message"}), 404
+
+        return jsonify(plots), 200
+
+    except Exception as e:
+        return jsonify(str(e)),500
 
 def token_required(f):
     @wraps(f)
@@ -191,5 +207,5 @@ def get_user_details(current_user):
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT is not set
+    port = int(os.environ.get("PORT", 8000))  # Default to 5000 if PORT is not set
     app.run(host="0.0.0.0", port=port)
